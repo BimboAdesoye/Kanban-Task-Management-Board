@@ -4,10 +4,14 @@ import "./App.css";
 import LandingPage from "./pages/LandingPage.jsx";
 import SideBar from "./components/SideBar.jsx";
 import Header from "./components/Header.jsx";
+// import Modal from "./components/Modal.jsx";
+import { useModalStore } from "./store/modal-store.js";
 
 function App() {
+  const isModalOpen = useModalStore((state) => state.isModalOpen);
+
   return (
-    <div>
+    <div className={isModalOpen ? "pointer-events-none" : ""}>
       <Header />
       <div
         className="flex w-full"
@@ -20,7 +24,7 @@ function App() {
           style={{
             flexGrow: 1,
             overflowX: "auto",
-            border: "1px solid red",
+            // border: "1px solid red",
           }}
         >
           <LandingPage />

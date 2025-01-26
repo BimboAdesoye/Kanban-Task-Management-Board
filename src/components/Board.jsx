@@ -15,7 +15,7 @@ const Board = () => {
         const isSelected = selectedBoardIndex === boardIndex;
         return (
           <button
-            className={`pt-[14px] pb-[15px] w-[95%] flex ${
+            className={`pt-[14px] pb-[15px] w-[95%] flex border-none outline-none ${
               isSelected ? " bg-purple rounded-r-[30px]" : ""
             }`}
             key={boardIndex}

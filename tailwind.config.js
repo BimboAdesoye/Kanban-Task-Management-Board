@@ -17,6 +17,9 @@ export default {
         red: "#EA5555",
         redHover: "#FF9898",
       },
+      boxShadow: {
+        'subtle': '0 1px 4px rgba(130, 143, 163, 0.2)',
+      },
     },
   },
   plugins: [],

@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import { useTheme } from "../../ThemeContext.jsx";
 
-export const PrimaryButton = ({ label, width = "auto", height = "auto" }) => {
+export const PrimaryButton = ({ children, paddingInline, paddingBlock }) => {
   const { darkMode } = useTheme();
 
   return (
@@ -8,9 +9,9 @@ export const PrimaryButton = ({ label, width = "auto", height = "auto" }) => {
       className={`btn btn-primary heading-medium text-white  ${
         darkMode ? "dark-mode" : ""
       }`}
-      style={{ width, height }}
+      style={{ paddingInline, paddingBlock }}
     >
-      {label}
+      {children}
     </button>
   );
 };
