@@ -2,18 +2,7 @@ import { create } from "zustand";
 import kanbanData from "../kanbandata.json";
 
 export const useBoardStore = create((set, get) => ({
-  // boards: kanbanData.boards.map((board) => ({
-  //   ...board,
-  //   columns: board.columns.map((column) => ({
-  //     ...column,
-  //     tasks: column.tasks.map((task, index) => ({
-  //       ...task,
-  //       id: `${column.name}-${index}`,
-  //     })),
-  //   })),
-  // })),
-
-  boards: () => {
+  boards: (() => {
     const storedBoards = JSON.parse(localStorage.getItem("boards"));
     return storedBoards
       ? storedBoards
@@ -27,7 +16,7 @@ export const useBoardStore = create((set, get) => ({
             })),
           })),
         }));
-  },
+  })(),
 
   selectedBoardIndex: 0,
   setSelectedBoardIndex: (index) => set({ selectedBoardIndex: index }),
@@ -41,9 +30,9 @@ export const useBoardStore = create((set, get) => ({
       return column ? column.tasks : [];
     },
 
-  addTask: (boardId, newTask) =>
-    set((state) => ({
-      boards: state.boards.map((board, boardIndex) =>
+  addTask: (boardId, newTask) => {
+    set((state) => {
+      const updatedBoards = state.boards.map((board, boardIndex) =>
         boardIndex === boardId
           ? {
               ...board,
@@ -66,8 +55,13 @@ export const useBoardStore = create((set, get) => ({
               ),
             }
           : board
-      ),
-    })),
+      );
+
+      localStorage.setItem("boards", JSON.stringify(updatedBoards));
+
+      return { boards: updatedBoards };
+    });
+  },
 
   updateTaskStatus: (taskId, newStatus) =>
     set((state) => ({
@@ -85,4 +79,20 @@ export const useBoardStore = create((set, get) => ({
           : board
       ),
     })),
+
+  deleteTask: (boardId, taskId) => {
+    set((state) => {
+      const updatedBoards = [...state.boards];
+      const selectedBoard = updatedBoards[boardId];
+
+      selectedBoard.columns.forEach(
+        (column) =>
+          (column.tasks = column.tasks.filter((task) => task.id !== taskId))
+      );
+
+      localStorage.setItem("boards", JSON.stringify(updatedBoards));
+
+      return { boards: updatedBoards };
+    });
+  },
 }));

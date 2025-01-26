@@ -155,7 +155,7 @@ input.error {
   border-radius: 5px;
   color: var(--checkboxColor);
   /* background-color: #E4EBFA; */
-  background-color: #F4F7FD;
+  background-color: #f4f7fd;
   display: flex;
   font-size: 0.8125rem;
   font-weight: bold;
@@ -204,12 +204,12 @@ select {
   top: 50%;
   right: 16px; /* Align with padding */
   transform: translateY(-50%);
-  pointer-events: none; 
+  pointer-events: none;
 }
 
 select:focus {
   outline: none;
-  border-color: #635fc7; 
+  border-color: #635fc7;
 }
 
 select option {
@@ -221,5 +221,5 @@ select option {
 }
 
 .overlay {
-background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.8);
 }

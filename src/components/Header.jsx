@@ -1,4 +1,3 @@
-import { PrimaryButton } from "./button/Buttons";
 import kanbanLogo from "../../public/Group 16.svg";
 import { useBoardStore } from "../store/board-store.js";
 import { useModalStore } from "../store/modal-store.js";
@@ -81,10 +80,8 @@ const Header = () => {
     toast.success("Task added successfully!");
   };
 
-  console.log(formData);
-
   return (
-    <div onClick={openAddTaskModal}>
+    <div>
       <Toaster richColors/>
       <header className="h-[97px] flex items-center bg-white">
         <div className="w-[300px] border-r-[1px] border-linesLight h-full flex items-center justify-center">
@@ -93,9 +90,9 @@ const Header = () => {
         <div className="flex justify-between w-full items-center px-[32px]">
           <p className="heading-xl text-black">{selectedBoard?.name || ""}</p>
           <span className="flex gap-[24px] justify-between">
-            <PrimaryButton paddingInline="25px" paddingBlock="15px">
-              <p>Add New Task</p>
-            </PrimaryButton>
+            <button className="px-[25px] py-[15px] btn btn-primary" onClick={openAddTaskModal}>
+              <p className='heading-medium text-white'>+ Add New Task</p>
+            </button>
             <button className="kebab-menu text-[28px]" disabled>
               ⋮
             </button>
