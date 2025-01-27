@@ -1,5 +1,6 @@
 import kanbanLogo from "../../public/Group 16.svg";
 import AddTask from "./AddTask.jsx";
+import DeleteBoard from "./DeleteBoard.jsx";
 import { useBoardStore } from "../store/board-store.js";
 import { useModalStore } from "../store/modal-store.js";
 import { Toaster } from "sonner";
@@ -9,6 +10,8 @@ const Header = () => {
   const selectedBoardIndex = useBoardStore((state) => state.selectedBoardIndex);
   const selectedBoard = boards[selectedBoardIndex];
   const openAddTaskModal = useModalStore((state) => state.openAddTaskModal);
+  const openGenericModal = useModalStore((state) => state.openGenericModal);
+  const currentModal = useModalStore((state) => state.currentModal);
 
   return (
     <div>
@@ -26,13 +29,17 @@ const Header = () => {
             >
               <p className="heading-medium text-white">+ Add New Task</p>
             </button>
-            <button className="kebab-menu text-[28px]" disabled>
+            <button
+              className="kebab-menu text-[28px] cursor-pointer"
+              onClick={() => openGenericModal("deleteBoard")}
+            >
               ⋮
             </button>
           </span>
         </div>
       </header>
       <AddTask />
+      {currentModal === "deleteBoard" && <DeleteBoard />}
     </div>
   );
 };

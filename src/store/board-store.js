@@ -29,6 +29,17 @@ export const useBoardStore = create((set, get) => ({
     });
   },
 
+  deleteBoard: (boardId) => {
+    set((state) => {
+      const updatedBoards = state.boards.filter(
+        (_, index) => index !== boardId
+      );
+      localStorage.setItem("boards", JSON.stringify(updatedBoards));
+
+      return { boards: updatedBoards };
+    });
+  },
+
   getTasks:
     (columnName = "Todo") =>
     (state) => {

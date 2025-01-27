@@ -25,5 +25,5 @@ export const useModalStore = create((set) => ({
   isGenericModalOpen: false,
   openGenericModal: (modalName) =>
     set({ isGenericModalOpen: true, currentModal: modalName }),
-  closeGenericModal: () => set({ isGenericModalOpen: false }),
+  closeGenericModal: () => set({ isGenericModalOpen: false, currentModal: null }),
 }));
