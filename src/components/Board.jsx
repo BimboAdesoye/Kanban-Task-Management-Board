@@ -1,6 +1,9 @@
 import { useBoardStore } from "../store/board-store.js";
 import boardIcon from "/fluent_board-split-24-regular.svg";
 import boardIconGray from "/board-icongray.png";
+import boardIconBlue from '/board-icon-blue.svg';
+import { useModalStore } from "../store/modal-store.js";
+import AddBoard from "./AddBoard.jsx";
 
 const Board = () => {
   const boards = useBoardStore((state) => state.boards);
@@ -8,6 +11,8 @@ const Board = () => {
   const setSelectedBoardIndex = useBoardStore(
     (state) => state.setSelectedBoardIndex
   );
+  const openGenericModal = useModalStore((state) => state.openGenericModal);
+  const isGenericModalOpen = useModalStore((state) => state.isGenericModalOpen);
 
   return (
     <div className="flex flex-col">
@@ -36,6 +41,13 @@ const Board = () => {
           </button>
         );
       })}
+      <button onClick={openGenericModal} className='pt-[14px] pb-[15px] w-[95%] flex border-none outline-none'>
+        <img className="ml-[32px] mr-[16px]" src={boardIconBlue} alt="" />
+        <p className="heading-medium text-purple">+ Create New Board</p>
+      </button>
+      {isGenericModalOpen && (
+        <AddBoard />
+      )}
     </div>
   );
 };

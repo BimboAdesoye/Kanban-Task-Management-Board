@@ -21,6 +21,14 @@ export const useBoardStore = create((set, get) => ({
   selectedBoardIndex: 0,
   setSelectedBoardIndex: (index) => set({ selectedBoardIndex: index }),
 
+  addBoard: (newBoard) => {
+    set((state) => {
+      const updatedBoards = [...state.boards, newBoard];
+      localStorage.setItem("boards", JSON.stringify(updatedBoards));
+      return { boards: updatedBoards };
+    });
+  },
+
   getTasks:
     (columnName = "Todo") =>
     (state) => {
