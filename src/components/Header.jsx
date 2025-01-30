@@ -4,6 +4,7 @@ import DeleteBoard from "./DeleteBoard.jsx";
 import { useBoardStore } from "../store/board-store.js";
 import { useModalStore } from "../store/modal-store.js";
 import { Toaster } from "sonner";
+// import EditBoard from "../components/EditBoard";
 
 const Header = () => {
   const boards = useBoardStore((state) => state.boards);
@@ -23,6 +24,12 @@ const Header = () => {
         <div className="flex justify-between w-full items-center px-[32px]">
           <p className="heading-xl text-black">{selectedBoard?.name || ""}</p>
           <span className="flex gap-[24px] justify-between">
+            <button
+              className="px-[25px] py-[15px] mx-[20px] btn btn-destructive"
+              onClick={() => openGenericModal("editBoard")}
+            >
+              <p className="heading-medium text-white">+ Edit Board</p>
+            </button>
             <button
               className="px-[25px] py-[15px] btn btn-primary"
               onClick={openAddTaskModal}

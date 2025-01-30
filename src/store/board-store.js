@@ -29,6 +29,16 @@ export const useBoardStore = create((set, get) => ({
     });
   },
 
+  editBoard: (boardId, updatedBoard) => {
+    set((state) => {
+      const updatedBoards = state.boards.map((board, boardIndex) =>
+        boardIndex === boardId ? { ...board, ...updatedBoard } : board
+      );
+      localStorage.setItem("boards", JSON.stringify(updatedBoards));
+      return { boards: updatedBoards };
+    });
+  },
+
   deleteBoard: (boardId) => {
     set((state) => {
       const updatedBoards = state.boards.filter(
