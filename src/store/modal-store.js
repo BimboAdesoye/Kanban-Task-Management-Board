@@ -9,21 +9,28 @@ export const useModalStore = create((set) => ({
   closeCurrentModal: () =>
     set({ currentModal: null, isModalOpen: false, selectedTask: null }),
 
-  openModal: (task, modalName) =>
-    set({
-      isModalOpen: true,
-      selectedTask: { ...task },
-      currentModal: modalName,
-    }),
+  // openModal: (task, modalName) =>
+  //   set({
+  //     isModalOpen: true,
+  //     selectedTask: { ...task },
+  //     currentModal: modalName,
+  //   }),
 
-  closeModal: () => set({ isModalOpen: false }),
+  // closeModal: () => set({ isModalOpen: false }),
 
   isAddTaskModalOpen: false,
   openAddTaskModal: () => set({ isAddTaskModalOpen: true }),
   closeAddTaskModal: () => set({ isAddTaskModalOpen: false }),
 
   isGenericModalOpen: false,
-  openGenericModal: (modalName) =>
-    set({ isGenericModalOpen: true, currentModal: modalName }),
-  closeGenericModal: () => set({ isGenericModalOpen: false, currentModal: null }),
+
+  openGenericModal: (modalName, task) =>
+    set((state) => ({
+      isGenericModalOpen: true,
+      currentModal: modalName,
+      selectedTask: task !== undefined ? { ...task } : state.selectedTask,
+    })),
+
+  closeGenericModal: () =>
+    set({ isGenericModalOpen: false, currentModal: null, selectedTask: null }),
 }));

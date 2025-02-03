@@ -10,8 +10,6 @@ const Column = () => {
   return (
     <div className="flex gap-[24px]">
       {selectedBoard.columns?.map((column, columnIndex) => {
-        console.log(column.name)
-      
         return (
           <div
             className="capitalize w-[280px] flex flex-col h-[fit-content]"

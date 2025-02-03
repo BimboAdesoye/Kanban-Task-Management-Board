@@ -92,6 +92,28 @@ export const useBoardStore = create((set, get) => ({
     });
   },
 
+  editTask: (boardId, taskId, updatedTask) => {
+    set((state) => {
+      const updatedBoards = state.boards.map((board, boardIndex) =>
+        boardIndex === boardId
+          ? {
+              ...board,
+              columns: board.columns.map((column) => ({
+                ...column,
+                tasks: column.tasks.map((task) =>
+                  task.id === taskId ? { ...task, ...updatedTask } : task
+                ),
+              })),
+            }
+          : board
+      );
+
+      localStorage.setItem("boards", JSON.stringify(updatedBoards));
+
+      return { boards: updatedBoards };
+    });
+  },
+
   updateTaskStatus: (taskId, newStatus) =>
     set((state) => ({
       boards: state.boards.map((board, boardIndex) =>

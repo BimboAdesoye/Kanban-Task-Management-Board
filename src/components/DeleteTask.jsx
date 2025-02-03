@@ -10,6 +10,8 @@ const DeleteTask = () => {
   const deleteTask = useBoardStore((state) => state.deleteTask);
   const selectedBoardIndex = useBoardStore((state) => state.selectedBoardIndex);
 
+  console.log(selectedTask)
+
   const handleDeleteTask = () => {
     deleteTask(selectedBoardIndex, selectedTask?.id);
     closeCurrentModal();

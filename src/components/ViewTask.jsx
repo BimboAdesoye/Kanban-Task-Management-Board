@@ -1,12 +1,13 @@
 /* eslint-disable react/prop-types */
-import Modal from "./Modal";
+// import Modal from "./Modal";
+import GenericModal from "./GenericModal";
 import { useModalStore } from "../store/modal-store.js";
 import { useBoardStore } from "../store/board-store.js";
 
 const ViewTask = ({ task }) => {
   const selectedTask = useModalStore((state) => state.selectedTask);
   const openGenericModal = useModalStore((state) => state.openGenericModal);
-  const closeModal = useModalStore((state) => state.closeModal);
+  // const closeModal = useModalStore((state) => state.closeModal);
   const updateTaskStatus = useBoardStore((state) => state.updateTaskStatus);
 
   const handleStatusChange = (taskId, event) => {
@@ -15,22 +16,23 @@ const ViewTask = ({ task }) => {
   };
 
   return (
-    <Modal>
+    <GenericModal>
       <span className="flex justify-between items-center">
         <h1 className="heading-large text-black ">{selectedTask?.title}</h1>
         <button
-          className="kebab-menu text-[28px]"
-          onClick={() => openGenericModal("deleteTask")}
+          className="kebab-menu text-[28px] w-[20px] text-right"
+          // onClick={() => openGenericModal("deleteTask")}
+          onClick={() => openGenericModal("taskOptions")}
         >
           ⋮
         </button>
       </span>
-      <div
+      {/* <div
         className="text-red mt-[10px] absolute l-0 text-[24px] font-bold right-5 top-3 cursor-pointer"
         onClick={closeModal}
       >
         X
-      </div>
+      </div> */}
       {selectedTask?.description && (
         <p className="body-large text-mediumGray mt-[24px]">
           {selectedTask?.description}
@@ -71,7 +73,7 @@ const ViewTask = ({ task }) => {
           <option value="Done">Done</option>
         </select>
       </div>
-    </Modal>
+    </GenericModal>
   );
 };
 
