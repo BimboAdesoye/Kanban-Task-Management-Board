@@ -114,9 +114,9 @@ export const useBoardStore = create((set, get) => ({
     });
   },
 
-  updateTaskStatus: (taskId, newStatus) =>
-    set((state) => ({
-      boards: state.boards.map((board, boardIndex) =>
+  updateTaskStatus: (taskId, newStatus) => {
+    set((state) => {
+      const updatedBoards = state.boards.map((board, boardIndex) =>
         boardIndex === state.selectedBoardIndex
           ? {
               ...board,
@@ -128,8 +128,13 @@ export const useBoardStore = create((set, get) => ({
               })),
             }
           : board
-      ),
-    })),
+      );
+
+      localStorage.setItem("boards", JSON.stringify(updatedBoards));
+
+      return { board: updatedBoards };
+    });
+  },
 
   deleteTask: (boardId, taskId) => {
     set((state) => {
@@ -145,5 +150,75 @@ export const useBoardStore = create((set, get) => ({
 
       return { boards: updatedBoards };
     });
+  },
+
+  setColumn: (newColumns) => {
+    (state) => {
+      const updatedBoards = state.boards.map((board, boardIndex) =>
+        boardIndex === state.selectedBoardIndex
+          ? { ...board, columns: newColumns }
+          : board
+      );
+      localStorage.setItem("boards", JSON.stringify(updatedBoards));
+      return { boards: updatedBoards };
+    };
+  },
+
+  onDragEnd: (result) => {
+    const { source, destination, draggableId } = result;
+
+    // If dropped outside or in the same position, do nothing
+    if (
+      !destination ||
+      (source.droppableId === destination.droppableId &&
+        source.index === destination.index)
+    ) {
+      return;
+    }
+
+    const sourceColumn = get().getColumn(source.droppableId);
+    const destinationColumn = get().getColumn(destination.droppableId);
+    const task = sourceColumn.tasks.find((task) => task.id === draggableId);
+
+    if (source.droppableId === destination.droppableId) {
+      // Re-order within the same column
+      const reOrderedTasks = get().reorderTasks(
+        sourceColumn.tasks,
+        source.index,
+        destination.index
+      );
+      sourceColumn.tasks = reOrderedTasks;
+    } else {
+      // Move task to a different column
+      sourceColumn.tasks = sourceColumn.tasks.filter(
+        (task) => task.id !== draggableId
+      );
+      destinationColumn.tasks.splice(destination.index, 0, task);
+    }
+
+    const updatedColumns = get().getUpdatedColumns();
+    get().setColumn(updatedColumns);
+
+    localStorage.setItem("boards", JSON.stringify(get().boards));
+  },
+
+  // To reorder tasks within the same column
+  reorderTasks: (tasks, startIndex, endIndex) => {
+    const result = Array.from(tasks);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+    return result;
+  },
+
+  // To get a column by name
+  getColumn: (columnName) => {
+    const selectedBoard = get().boards[get().selectedBoardIndex];
+    return selectedBoard.columns.find((column) => column.name === columnName);
+  },
+
+  // To get the updated columns after drag and drop
+  getUpdatedColumns: () => {
+    const selectedBoard = get().boards[get().selectedBoardIndex];
+    return selectedBoard.columns;
   },
 }));

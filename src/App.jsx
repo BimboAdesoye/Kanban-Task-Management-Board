@@ -1,10 +1,10 @@
 import "./App.css";
 // import { useEffect } from "react";
 // import { useTheme } from "./ThemeContext.jsx";
+// import Modal from "./components/Modal.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
 import SideBar from "./components/SideBar.jsx";
 import Header from "./components/Header.jsx";
-// import Modal from "./components/Modal.jsx";
 import { useModalStore } from "./store/modal-store.js";
 
 function App() {

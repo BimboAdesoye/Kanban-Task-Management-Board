@@ -14,6 +14,13 @@ const Header = () => {
   const openGenericModal = useModalStore((state) => state.openGenericModal);
   const currentModal = useModalStore((state) => state.currentModal);
 
+  const getColumns = () => {
+    if (!boards.length || selectedBoardIndex === null) return [];
+    return selectedBoard.columns || [];
+  };
+
+  const columnsLength = getColumns().length;
+  
   return (
     <div>
       <Toaster richColors />
@@ -25,14 +32,18 @@ const Header = () => {
           <p className="heading-xl text-black">{selectedBoard?.name || ""}</p>
           <span className="flex gap-[24px] justify-between">
             <button
-              className="px-[25px] py-[15px] mx-[20px] btn btn-destructive"
+              
+              className="px-[25px] py-[15px] btn btn-destructive"
               onClick={() => openGenericModal("editBoard")}
-            >
+              >
               <p className="heading-medium text-white">+ Edit Board</p>
             </button>
             <button
-              className="px-[25px] py-[15px] btn btn-primary"
-              onClick={openAddTaskModal}
+            disabled={columnsLength < 1}
+            onClick={openAddTaskModal}
+            className={`px-[25px] py-[15px] mx-[20px] btn btn-primary ${
+              columnsLength < 1 ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             >
               <p className="heading-medium text-white">+ Add New Task</p>
             </button>

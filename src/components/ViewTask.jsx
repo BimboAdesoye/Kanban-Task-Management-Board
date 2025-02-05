@@ -21,18 +21,11 @@ const ViewTask = ({ task }) => {
         <h1 className="heading-large text-black ">{selectedTask?.title}</h1>
         <button
           className="kebab-menu text-[28px] w-[20px] text-right"
-          // onClick={() => openGenericModal("deleteTask")}
           onClick={() => openGenericModal("taskOptions")}
         >
           ⋮
         </button>
       </span>
-      {/* <div
-        className="text-red mt-[10px] absolute l-0 text-[24px] font-bold right-5 top-3 cursor-pointer"
-        onClick={closeModal}
-      >
-        X
-      </div> */}
       {selectedTask?.description && (
         <p className="body-large text-mediumGray mt-[24px]">
           {selectedTask?.description}
