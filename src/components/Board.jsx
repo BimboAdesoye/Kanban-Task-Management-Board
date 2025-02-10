@@ -20,14 +20,14 @@ const Board = () => {
         const isSelected = selectedBoardIndex === boardIndex;
         return (
           <button
-            className={`pt-[14px] pb-[15px] w-[95%] flex border-none outline-none ${
+            className={`pt-[14px] pb-[15px] w-[95%] flex border-none outline-none gap-[16px] ${
               isSelected ? " bg-purple rounded-r-[30px]" : ""
             }`}
             key={boardIndex}
             onClick={() => setSelectedBoardIndex(boardIndex)}
           >
             <img
-              className="ml-[32px] mr-[16px]"
+              className="ml-[32px] md:ml-[24px]"
               src={isSelected ? boardIcon : boardIconGray}
               alt=""
             />
@@ -43,10 +43,12 @@ const Board = () => {
       })}
       <button
         onClick={() => openGenericModal("addBoard")}
-        className="pt-[14px] pb-[15px] w-[95%] flex border-none outline-none"
+        className="pt-[14px] pb-[15px] w-[95%] flex border-none outline-none gap-[16px] md:gap-[12px]"
       >
-        <img className="ml-[32px] mr-[16px]" src={boardIconBlue} alt="" />
-        <p className="heading-medium text-purple">+ Create New Board</p>
+        <img className="ml-[32px] md:ml-[24px]" src={boardIconBlue} alt="" />
+        <p className="heading-medium text-purple text-left">
+          + Create New Board
+        </p>
       </button>
       {currentModal === "addBoard" && <AddBoard />}
     </div>

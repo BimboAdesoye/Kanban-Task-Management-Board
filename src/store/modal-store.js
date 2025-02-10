@@ -33,4 +33,20 @@ export const useModalStore = create((set) => ({
 
   closeGenericModal: () =>
     set({ isGenericModalOpen: false, currentModal: null, selectedTask: null }),
+
+  isSideBarModalOpen: false,
+
+
+  toggleSideBarModal: (modalName) =>
+    set((state) => ({
+      isSideBarModalOpen:
+        state.currentModal === modalName ? !state.isSideBarModalOpen : true,
+      currentModal:
+        state.isSideBarModalOpen && state.currentModal === modalName
+          ? null
+          : modalName,
+    })),
+
+  closeSideBarModal: () =>
+    set({ isSideBarModalOpen: false, currentModal: null }),
 }));

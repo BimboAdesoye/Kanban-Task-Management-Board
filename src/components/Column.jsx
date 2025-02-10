@@ -6,11 +6,15 @@ const Column = () => {
   const boards = useBoardStore((state) => state.boards);
   const selectedBoardIndex = useBoardStore((state) => state.selectedBoardIndex);
 
-  const selectedBoard = boards[selectedBoardIndex] || {};
+  const selectedBoard = boards[selectedBoardIndex] || { columns: [] };
+
+  // localStorage.removeItem("boards");
+  // location.reload();
 
   return (
     <div className="flex gap-[24px]">
       {selectedBoard.columns?.map((column, columnIndex) => (
+        // console.log(column.tasks),
         <Droppable key={columnIndex} droppableId={column.name}>
           {(provided) => (
             <div
@@ -26,10 +30,17 @@ const Column = () => {
                   {column.name} ({column.tasks.length})
                 </p>
               </span>
-              <div className="flex flex-col gap-[20px]">
-                {column.tasks.map((task, taskIndex) => {
-                  return <Task key={task.id} task={task} index={taskIndex} />;
-                })}
+              <div key={columnIndex} className="flex flex-col gap-[20px]">
+                {/* {column.tasks.map((task, taskIndex) => {
+                  console.log(task.title)
+                  return <Task key={task?.title} task={task} index={taskIndex} />;
+                })} */}
+                {Array.isArray(column.tasks) &&
+                  column.tasks.map((task, taskIndex) =>
+                    task && task.id ? (
+                      <Task key={task.id} task={task} index={taskIndex} />
+                    ) : null
+                  )}
                 {provided.placeholder}
               </div>
             </div>

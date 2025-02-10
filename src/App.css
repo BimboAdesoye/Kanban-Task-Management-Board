@@ -223,3 +223,13 @@ select option {
 .overlay {
   background-color: rgba(0, 0, 0, 0.7);
 }
+
+/* @media (min-width: 768px) {
+  .kanban {
+    width: 261px;
+  }
+} */
+
+.kanban {
+  width: 265px;
+}

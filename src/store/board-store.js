@@ -4,6 +4,7 @@ import kanbanData from "../kanbandata.json";
 export const useBoardStore = create((set, get) => ({
   boards: (() => {
     const storedBoards = JSON.parse(localStorage.getItem("boards"));
+    console.log("Loaded from localStorage:", storedBoards);
     return storedBoards
       ? storedBoards
       : kanbanData.boards.map((board) => ({
@@ -46,7 +47,10 @@ export const useBoardStore = create((set, get) => ({
       );
       localStorage.setItem("boards", JSON.stringify(updatedBoards));
 
-      return { boards: updatedBoards };
+      return {
+        boards: updatedBoards,
+        selectedBoardIndex: updatedBoards.length > 0 ? 0 : -1, // Reset index
+      };
     });
   },
 
@@ -55,8 +59,10 @@ export const useBoardStore = create((set, get) => ({
     (state) => {
       const selectedBoard = state.boards[state.selectedBoardIndex];
       if (!selectedBoard) return [];
-      const column = selectedBoard.find((column) => column.name === columnName);
-      return column ? column.tasks : [];
+      const column = selectedBoard.columns.find(
+        (column) => column.name === columnName
+      );
+      return column ? column.tasks.filter((task) => task !== null) : [];
     },
 
   addTask: (boardId, newTask) => {
@@ -116,23 +122,45 @@ export const useBoardStore = create((set, get) => ({
 
   updateTaskStatus: (taskId, newStatus) => {
     set((state) => {
-      const updatedBoards = state.boards.map((board, boardIndex) =>
-        boardIndex === state.selectedBoardIndex
-          ? {
-              ...board,
-              columns: board.columns.map((column) => ({
-                ...column,
-                tasks: column.tasks.map((task) =>
-                  task.id === taskId ? { ...task, status: newStatus } : task
-                ),
-              })),
+      const updatedBoards = state.boards.map((board, boardIndex) => {
+        if (boardIndex !== state.selectedBoardIndex) return board;
+
+        let taskToMove = null;
+
+        // Remove task from current column
+        const updatedColumns = board.columns.map((column) => {
+          if (column.tasks.some((task) => task.id === taskId)) {
+            const filteredTasks = column.tasks.filter((task) => {
+              if (task.id === taskId) {
+                taskToMove = { ...task, status: newStatus };
+                return false;
+              }
+              return true;
+            });
+
+            return { ...column, tasks: filteredTasks };
+          }
+          return column;
+        });
+
+        // Add task to new column
+        if (taskToMove) {
+          const updatedColumnsWithNewTask = updatedColumns.map((column) => {
+            if (column.name === newStatus) {
+              return { ...column, tasks: [...column.tasks, taskToMove] };
             }
-          : board
-      );
+            return column;
+          });
+
+          return { ...board, columns: updatedColumnsWithNewTask };
+        }
+
+        return { ...board, columns: updatedColumns };
+      });
 
       localStorage.setItem("boards", JSON.stringify(updatedBoards));
 
-      return { board: updatedBoards };
+      return { boards: updatedBoards };
     });
   },
 
@@ -153,7 +181,7 @@ export const useBoardStore = create((set, get) => ({
   },
 
   setColumn: (newColumns) => {
-    (state) => {
+    set((state) => {
       const updatedBoards = state.boards.map((board, boardIndex) =>
         boardIndex === state.selectedBoardIndex
           ? { ...board, columns: newColumns }
@@ -161,7 +189,7 @@ export const useBoardStore = create((set, get) => ({
       );
       localStorage.setItem("boards", JSON.stringify(updatedBoards));
       return { boards: updatedBoards };
-    };
+    });
   },
 
   onDragEnd: (result) => {
@@ -178,7 +206,12 @@ export const useBoardStore = create((set, get) => ({
 
     const sourceColumn = get().getColumn(source.droppableId);
     const destinationColumn = get().getColumn(destination.droppableId);
-    const task = sourceColumn.tasks.find((task) => task.id === draggableId);
+    const task = sourceColumn.tasks.find((task) => {
+      console.log(task);
+      task.id === draggableId;
+    });
+
+    console.log(sourceColumn);
 
     if (source.droppableId === destination.droppableId) {
       // Re-order within the same column
@@ -199,7 +232,10 @@ export const useBoardStore = create((set, get) => ({
     const updatedColumns = get().getUpdatedColumns();
     get().setColumn(updatedColumns);
 
-    localStorage.setItem("boards", JSON.stringify(get().boards));
+    set((state) => {
+      localStorage.setItem("boards", JSON.stringify(state.boards));
+      return { boards: [...state.boards] };
+    });
   },
 
   // To reorder tasks within the same column
@@ -221,4 +257,8 @@ export const useBoardStore = create((set, get) => ({
     const selectedBoard = get().boards[get().selectedBoardIndex];
     return selectedBoard.columns;
   },
+
+  isSideBarOpen: true,
+  openSideBar: () => set({ isSideBarOpen: true }),
+  closeSideBar: () => set({ isSideBarOpen: false }),
 }));
