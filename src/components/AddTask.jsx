@@ -78,7 +78,7 @@ const AddTask = () => {
 
   return (
     <AddTaskModal>
-      <h1 className="heading-large text-black">Add Title</h1>
+      <h1 className="heading-large text-black">Add New Task</h1>
       <form
         onSubmit={handleSubmit}
         className="mt-[24px] flex flex-col gap-[24px]"
