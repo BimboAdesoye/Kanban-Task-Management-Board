@@ -180,17 +180,17 @@ export const useBoardStore = create((set, get) => ({
     });
   },
 
-  setColumn: (newColumns) => {
-    set((state) => {
-      const updatedBoards = state.boards.map((board, boardIndex) =>
-        boardIndex === state.selectedBoardIndex
-          ? { ...board, columns: newColumns }
-          : board
-      );
-      localStorage.setItem("boards", JSON.stringify(updatedBoards));
-      return { boards: updatedBoards };
-    });
-  },
+  // setColumn: (newColumns) => {
+  //   set((state) => {
+  //     const updatedBoards = state.boards.map((board, boardIndex) =>
+  //       boardIndex === state.selectedBoardIndex
+  //         ? { ...board, columns: newColumns }
+  //         : board
+  //     );
+  //     localStorage.setItem("boards", JSON.stringify(updatedBoards));
+  //     return { boards: updatedBoards };
+  //   });
+  // },
 
   onDragEnd: (result) => {
     const { source, destination, draggableId } = result;
@@ -206,35 +206,59 @@ export const useBoardStore = create((set, get) => ({
 
     const sourceColumn = get().getColumn(source.droppableId);
     const destinationColumn = get().getColumn(destination.droppableId);
+
+    if (!sourceColumn || !destinationColumn) return;
+
     const task = sourceColumn.tasks.find((task) => {
       console.log(task);
-      task.id === draggableId;
+      return task.id === draggableId;
     });
+    if(!task) return;
 
-    console.log(sourceColumn);
+    let newSourceTasks = [...sourceColumn.tasks];
+    let newDestinationTasks = [...destinationColumn.tasks];
 
     if (source.droppableId === destination.droppableId) {
       // Re-order within the same column
-      const reOrderedTasks = get().reorderTasks(
+      newSourceTasks = get().reorderTasks(
         sourceColumn.tasks,
         source.index,
         destination.index
       );
-      sourceColumn.tasks = reOrderedTasks;
     } else {
       // Move task to a different column
-      sourceColumn.tasks = sourceColumn.tasks.filter(
+       newSourceTasks = (newSourceTasks.tasks = sourceColumn.tasks.filter(
         (task) => task.id !== draggableId
-      );
-      destinationColumn.tasks.splice(destination.index, 0, task);
+      ));
+      newDestinationTasks.splice(destination.index, 0, task);
     }
 
-    const updatedColumns = get().getUpdatedColumns();
-    get().setColumn(updatedColumns);
+    const updatedColumns = get().getUpdatedColumns().map((column) => {
+      if (column.name === sourceColumn.name) {
+        return { ...column, tasks: newSourceTasks };
+      }
+      if (column.name === destinationColumn.name) {
+        return { ...column, tasks: newDestinationTasks };
+      }
+      return column;
+    });
 
+    // get().setColumn(updatedColumns);
+
+    // set((state) => {
+    //   localStorage.setItem("boards", JSON.stringify(state.boards));
+    //   return { boards: [...state.boards] };
+    // });
     set((state) => {
-      localStorage.setItem("boards", JSON.stringify(state.boards));
-      return { boards: [...state.boards] };
+      const updatedBoards = state.boards.map((board, index) =>
+        index === state.selectedBoardIndex
+          ? { ...board, columns: updatedColumns }
+          : board
+      );
+  
+      localStorage.setItem("boards", JSON.stringify(updatedBoards));
+  
+      return { boards: updatedBoards };
     });
   },
 
